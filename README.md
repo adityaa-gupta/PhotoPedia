@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# PhotoApp
+
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
+PhotoApp is a web application that allows users to create and manage photo projects. Users can upload photos, view their galleries, and manage their projects with ease. Built with modern web technologies, PhotoApp provides a seamless and intuitive user experience.
+
+## Features
+
+- **User Authentication**: Secure login and registration using Firebase Authentication.
+- **Project Management**: Create, view, and delete photo projects.
+- **Photo Uploading**: Easily upload and display photos in each project.
+- **Owner-Only Access**: Only project owners can add photos to their projects.
+- **Responsive Design**: Fully responsive layout for a great user experience on any device.
+- **Dynamic Galleries**: View organized galleries of photos for each project.
+
+## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [API Reference](#api-reference)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Getting Started
 
-First, run the development server:
+These instructions will help you set up the project locally on your machine.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Technologies Used
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **React**: A JavaScript library for building user interfaces.
+- **Next.js**: A React framework for server-side rendering and static site generation.
+- **Firebase**: Cloud-based services for authentication, database, and storage.
+- **Tailwind CSS**: A utility-first CSS framework for styling.
+- **Vercel**: The platform used for deployment.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Installation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/adityaa-gupta/PhotoPedia.git
+   cd photoapp
