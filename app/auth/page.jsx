@@ -1,125 +1,158 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import useAuth from "@/hooks/useAuth";
-import { toastSuccess } from "@/utils/toast";
-
-// import useAuth from "@hooks/useAuth";
-// import useAuthStore from "@store/useAuthStore";
-// import { toast } from "react-toastify";
+import { toastSuccess, toastError } from "@/utils/toast"; // Ensure you have toastError for error handling
+import Image from "next/image";
 
 const Auth = () => {
   const { signUp, signIn } = useAuth("/projects");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLogedIn, setISLogedIn] = useState(false);
+  const [isLogedIn, setIsLogedIn] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const user = useAuthStore((state) => state.user);
+  const [error, setError] = useState(null); // State to manage error messages
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
     setLoading(true);
-    signIn(username, password);
-    setUsername("");
-    setPassword("");
-    toastSuccess("Sign In successfully");
-    setLoading(false);
+    setError(null); // Reset error on new attempt
+    try {
+      await signIn(username, password);
+      toastSuccess("Signed in successfully");
+    } catch (err) {
+      setError("Failed to sign in. Please check your credentials.");
+      toastError("Failed to sign in");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     setLoading(true);
-    signUp(username, password);
-    setUsername("");
-    setPassword("");
-    toastSuccess("Sign Up successfully");
-    setLoading(false);
+    setError(null); // Reset error on new attempt
+    try {
+      await signUp(username, password);
+      toastSuccess("Signed up successfully");
+    } catch (err) {
+      setError("Failed to sign up. Please try again.");
+      toastError("Failed to sign up");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formVariants = {
+    initial: { opacity: 0, x: 100 },
+    enter: { opacity: 1, x: 0, transition: { duration: 0.5 } },
+    exit: { opacity: 0, x: -100, transition: { duration: 0.5 } },
+  };
+
+  const imageVariants = {
+    initial: { opacity: 0, x: -100 },
+    enter: { opacity: 1, x: 0, transition: { duration: 0.5 } },
+    exit: { opacity: 0, x: 100, transition: { duration: 0.5 } },
   };
 
   return (
-    <div>
-      <div
-        className="bg-white mb-5 py-3 text-center text-3xl font-bold text-blue-500 md:text-5xl 
-      md:font-extrabold md:mb-8 "
-      >
-        <h1>{isLogedIn ? "Sign In" : "Sign Up"}</h1>
-      </div>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-black to-blue-900 text-white p-8">
+      <div className="flex flex-col md:flex-row items-center gap-8 w-full p-8 rounded-lg shadow-lg">
+        
+        {/* Text Column */}
+        <div className="flex flex-col items-center w-full text-center">
+          <h1 className="text-4xl font-extrabold md:text-6xl mb-4">
+            {isLogedIn ? "Sign In" : "Sign Up"} to PhotoPedia
+          </h1>
+          <p className="text-xl md:text-2xl mb-2">
+            {isLogedIn
+              ? "Welcome back! Log in to explore and share."
+              : "Join us to start managing and sharing your photos."}
+          </p>
+          {error && <p className="text-red-500 mb-4">{error}</p>} {/* Error Message */}
 
-      <div className="flex flex-col  md:flex-row  ">
-        <div>
-          <img
-            src={isLogedIn ? "login.svg" : "signup.svg"}
-            className="w-50"
-            alt=""
-          />
-        </div>
-        <div className="flex justify-center items-center ">
-          <div className="   px-3 pt-6 pb-8 m-4 md:px-5 md:pt-8 md:pb-10 md:m-6">
-            <div className="mb-4 p-3 bg-white rounded-md md:mb-4 md:p-4 md:rounded-lg shadow">
-              <label
-                className="text-blue-600   font-bold mb-2 md:text-2xl "
-                htmlFor="username"
-              >
-                Username
-              </label>
-              <input
-                className=" appearance-none  w-full py-1 px-1 text-gray-700 md:text-xl leading-tight outline-none "
-                id="username"
-                type="text"
-                placeholder="Enter your username"
-                value={username}
-                disabled={loading}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div className="mb-4 p-3 bg-white rounded-md md:mb-4 md:p-4 md:rounded-lg shadow">
-              <label
-                className="text-blue-600   font-bold mb-2 md:text-2xl"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <input
-                className="appearance-none  w-full py-1 px-1 text-gray-700 md:text-xl leading-tight outline-none "
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                disabled={loading}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="flex items-center justify-between  ">
-              {isLogedIn ? (
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-5
-                   rounded focus:outline-none focus:shadow-outline"
-                  type="submit"
-                  onClick={handleSignIn}
+          <AnimatePresence mode="wait">
+            <motion.form
+              key={isLogedIn ? "signInForm" : "signUpForm"}
+              className="flex flex-col justify-center items-center bg-gray-700 p-6 rounded-md w-full max-w-md space-y-6 shadow-inner"
+              onSubmit={isLogedIn ? handleSignIn : handleSignUp}
+              variants={formVariants}
+              initial="initial"
+              animate="enter"
+              exit="exit"
+            >
+              <div className="w-full">
+                <label
+                  htmlFor="username"
+                  className="text-blue-600 font-semibold text-lg"
                 >
-                  {loading ? "Please wait you are being redirected" : "Sign In"}
-                </button>
-              ) : (
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  type="submit"
-                  onClick={handleSignUp}
+                  Username
+                </label>
+                <input
+                  className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-md bg-black text-yellow-300 placeholder-yellow-400"
+                  id="username"
+                  type="text"
+                  placeholder="Enter your username"
+                  value={username}
+                  disabled={loading}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div className="w-full">
+                <label
+                  htmlFor="password"
+                  className="text-blue-600 font-semibold text-lg"
                 >
-                  {loading ? "Please wait you are being redirected" : "Sign Up"}
-                </button>
-              )}
+                  Password
+                </label>
+                <input
+                  className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-md bg-black text-yellow-300 placeholder-yellow-400"
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  disabled={loading}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <button
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition duration-300 ease-in-out shadow-lg"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? "Processing..." : isLogedIn ? "Sign In" : "Sign Up"}
+              </button>
               <button
                 type="button"
-                className="inline-block align-baseline font-bold text-xl text-gray-500 hover:text-gray-800 cursor-pointer"
-                onClick={() => setISLogedIn((val) => !val)}
+                className="text-gray-700 hover:text-blue-600 font-semibold transition"
+                onClick={() => setIsLogedIn((prev) => !prev)}
               >
-                {!isLogedIn
-                  ? "  Already have an account ? SignIn"
-                  : "Create your new account"}
+                {isLogedIn ? "New here? Create an account" : "Already have an account? Sign In"}
               </button>
-            </div>
-          </div>
+            </motion.form>
+          </AnimatePresence>
         </div>
+
+        {/* Image Column */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={isLogedIn ? "moments" : "organize"}
+            className="flex justify-center w-full md:w-1/2"
+            variants={imageVariants}
+            initial="initial"
+            animate="enter"
+            exit="exit"
+          >
+            <Image
+              src={isLogedIn ? "/moments.svg" : "/organize.svg"}
+              alt="Illustration"
+              width={400}
+              height={400}
+              className="rounded-lg"
+            />
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

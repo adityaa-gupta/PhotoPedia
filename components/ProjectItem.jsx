@@ -27,7 +27,7 @@ const ProjectItem = ({ project }) => {
 
   return (
     <div 
-      className="relative bg-white p-6 rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 cursor-pointer"
+      className="relative bg-white p-6 rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 cursor-pointer group"
       onClick={() => router.push(`/projects/${project.id}`)}
     >
       <button
@@ -41,11 +41,12 @@ const ProjectItem = ({ project }) => {
         &times;
       </button>
       <h3 className="text-2xl font-semibold text-blue-600 mb-2">{project.title}</h3>
-      <p className="text-gray-700 mb-4">{project.description}</p>
+      <p className="text-gray-700 mb-2">{project.description}</p>
       <p className="text-gray-500 italic mb-4">Place: {project.place}</p>
       {project.imageUrl && (
-        <img src={project.imageUrl} alt={project.title} className="mt-2 w-full h-48 object-cover rounded-lg shadow-md" />
+        <img src={project.imageUrl} alt={project.title} className="mt-2 w-full h-48 object-cover rounded-lg shadow-md transition-transform duration-300 ease-in-out transform group-hover:scale-105" />
       )}
+      <p className="text-sm text-gray-500">Created on: {new Date(project.createdAt).toLocaleDateString()}</p>
     </div>
   );
 };
